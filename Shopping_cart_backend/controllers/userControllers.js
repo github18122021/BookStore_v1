@@ -27,6 +27,27 @@ async function registerUser(req, res) {
 
         await User.create({name, email, password: hashedPassword});
 
+        // user = await User({email});
+        // let Atomic = await Books.findOne({name: "Atomic Habits"});
+
+        // await cartItemModel.create({
+        //     "user": user._id,
+        //     "books": [{
+        //         "book": {
+        //             "_id": `${Atomic._id}`,
+        //             "name": "Atomic Habits",
+        //             "image": "https://m.media-amazon.com/images/I/513Y5o-DYtL.jpg",
+        //             "price": 19.99
+        //         },
+        //         "quantity": 2
+        //     },]
+        // });
+
+
+        // console.log(await cartItemModel.find({user: user._id}));
+
+
+
         return res.status(201).json({message: "user created successfully!"});
 
     } catch(error) {
@@ -145,42 +166,132 @@ async function getUser(req, res) {
 
 async function updateUser(req, res) {
     console.log(req.body);
-    console.log("Updating user...");
+    // console.log("Updating user...");
 
     const { userId, bookId, quantity } = req.body;
 
     if (!userId || !bookId || !quantity) {
+        console.log("missing fields");
         return res.status(400).json({ error: "Please fill in all fields!" });
     }
 
+    
+
     try {
-        let user = await cartItemModel.findOne({ user: userId });
 
-        if (!user) {
-            return res.status(404).json({ error: "User not found!" });
-        }
+        let user = await cartItemModel.findOne({user: userId});
 
-        let book = user.books.find((book) => book.book._id === bookId);
+        // checking if user exists in cart items collections
+        if(user) {
 
-        let fullBook = await Books.findById(bookId);
+            let book = user.books.find((book) => {
+                return book.book._id == bookId;
+            })
 
-        if (!fullBook) {
-            return res.status(404).json({ error: "Book not found!" });
-        }
+            console.log("book in cart items:", book);
 
-        if (!book) {
-            user.books.push({ book: fullBook, quantity });
+            if(book) {
+                book.quantity += quantity;
+                await user.save();
+                return console.log("book updated in cart items!");
+            } else {
+                    
+                    // checking if book exists in books database
+                    let book = await Books.findOne({
+                        _id: bookId,
+                    })
+
+                    if(book) {
+                        user.books.push({
+                            "book": {
+                                "_id": book._id,
+                                "name": book.name,
+                                "image": book.image,
+                                "price": book.price
+                            },
+                            "quantity": quantity
+                        });
+
+                        await user.save();
+                        return console.log("book added to cart items!");
+                    }
+            }
+
+            return console.log("user found in cart items!");
         } else {
-            book.quantity += quantity;
+
+            // checking if user exists in user database
+            let user = await User.findOne({
+                _id: userId
+            })
+
+            console.log("user in user database:", user);
+
+            // if user exists in user database, checking if book exists in books database
+            if(user) {
+                let book = await Books.findOne({
+                    _id: bookId,
+                })
+
+                if(book) {
+
+                    let result = await cartItemModel.create({
+                        "user": userId,
+                        "books": [
+                            {
+                                "book": {
+                                    "_id": book._id,
+                                    "name": book.name,
+                                    "image": book.image,
+                                    "price": book.price
+                                },
+                                "quantity": quantity
+                            }
+                        ]
+                    });
+
+                    console.log(result);
+                    return console.log("book added to cart items!");
+                } else {
+                    return console.log("book not found!");
+                }
+            } 
+
+            return console.log("user not found!");
         }
 
-        await user.save();
 
-        return res.status(200).json({ message: "User updated successfully!" });
-    } catch (error) {
-        console.error("Error:", error);
-        return res.status(500).json({ error: "An error occurred!" });
+    } catch(error) {
+        return res.status(500).json({error: "An error occurred!"});
     }
+    // try {
+    //     let user = await cartItemModel.findOne({ user: userId });
+
+    //     if (!user) {
+    //         return res.status(404).json({ error: "User not found!" });
+    //     }
+
+    //     let book = user.books.find((book) => book.book._id === bookId);
+
+    //     let fullBook = await Books.findById(bookId);
+
+    //     if (!fullBook) {
+    //         return res.status(404).json({ error: "Book not found!" });
+    //     }
+
+    //     if (!book) {
+    //         user.books.push({ book: fullBook, quantity });
+    //     } else {
+    //         book.quantity += quantity;
+    //     }
+
+    //     await user.save();
+
+    //     return res.status(200).json({ message: "User updated successfully!" });
+    // } catch (error) {
+    //     console.error("Error:", error);
+    //     return res.status(500).json({ error: "An error occurred!" });
+    // }
 }
 
 
