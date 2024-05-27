@@ -11,14 +11,14 @@ function Main(prop) {
 
   // pagination
   let [currentPage, setCurrentPage] = useState(1);
-  let [booksPerPage] = useState(3);
+  let [booksPerPage] = useState(12);
 
 
   // data fetching (getting books:)
   const {data, isLoading, isError} = useQuery({
     queryKey: ["books"],
     queryFn: async () => {
-      let response = await axios("http://localhost:3000/books");
+      let response = await axios(`${import.meta.env.VITE_BASE_URL}/books`);
 
       return response.data;
     }
@@ -54,8 +54,8 @@ function Main(prop) {
   function paginateFn(pageNum) {
     setCurrentPage(pageNum);
   }
-  console.log(data);
-  console.log(currentBooks);
+  // console.log(data);
+  // console.log(currentBooks);
   
   return (
     <>

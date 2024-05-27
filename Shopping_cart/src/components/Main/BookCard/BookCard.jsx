@@ -44,7 +44,7 @@ function BookCard(prop) {
         async function addToCart() {
           
           try {
-            let response = await axios.post("http://localhost:3000/addCart", {
+            let response = await axios.post(`${import.meta.env.VITE_BASE_URL}/addCart`, {
               bookId,
               userId: user.user,
               quantity: +bookItem

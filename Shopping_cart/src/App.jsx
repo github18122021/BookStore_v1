@@ -26,7 +26,7 @@ function App() {
     // Check if token is valid
     const checkToken = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/verify", {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/verify`, {
           headers: {
             Authorization: "Bearer " + token,
           },
@@ -55,7 +55,7 @@ function App() {
 
     async function getUser() {
       try {
-        let response = await axios.post("http://localhost:3000/user", {
+        let response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user`, {
           userId: user,
         });
 

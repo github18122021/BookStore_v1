@@ -2,13 +2,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LogoutIcon from '@mui/icons-material/Logout';
 // import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 import {useState} from "react";
 
 function Header(prop) {
   let [searchedBook, setSearchedBook] = useState("");
   let {setBooksToDisplay, totalCartItems, totalAmount, user} = prop;
-
+  const navigate = useNavigate();
   console.log(user);
   
 
@@ -34,7 +35,11 @@ function Header(prop) {
 
   function handleLogOut() {
     window.localStorage.removeItem("token");
-    window.location.href = "/login";
+    // window.location.href = "/login";
+
+    // reload
+    // window.location.reload();
+    navigate("/login");
   }
 
   return (

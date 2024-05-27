@@ -4,6 +4,8 @@ import {useMutation} from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {useState, useEffect} from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
     let [Error, isError] = useState(null);
@@ -18,15 +20,17 @@ function Login() {
         async function checkToken() {
             try {
 
-                const response = await axios.get("http://localhost:3000/verify", {
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/verify`, {
                   headers: {
                     Authorization: "Bearer " + token,
                   },
                 });
                 
-                console.log("Response:", response.data);
+                // console.log("Response:", response.data);
 
-                navigate("/bookstore");
+                // alert("You are already logged in!");
+                // toast.success("Successfully logged in!");
+                // navigate("/bookstore");
               } catch (error) {
                   
                 console.error("Error:", error.message);
@@ -57,14 +61,20 @@ function Login() {
     let loginUser = useMutation({
         mutationKey: "login",
         mutationFn: async (user) => {
-            let response = await axios.post("http://localhost:3000/login", user);
+            let response = await axios.post(`${import.meta.env.VITE_BASE_URL}/login`, user);
 
             return response.data;
         },
         onSuccess: (data) => {
             console.log(data);
             localStorage.setItem("token", data.token)
-            navigate("/bookstore");
+            toast.success("Successfully logged in!", {
+                theme: "dark"
+            });
+            
+            setTimeout(() => {
+                navigate("/bookstore");
+            }, 3000);
             
         },
         onError: (error) => {
@@ -72,13 +82,28 @@ function Login() {
             if(error.response) {
                 if(error.response.data && error.response.data.error) {
                     isError(error.response.data.error);
+
+                    toast.error(error.response.data.error, {
+                        theme: "dark"
+                    });
+
                 } else {
                     isError("Error occurred while logging in user!");
+                    toast.error("Error occurred while logging in user!", {
+                        theme: "dark"
+                    });
                 }
             } else if (error.request) {
                 isError("Error occurred while requesting data from server!");
+                toast.error("Error occurred while requesting data from server!", {
+                    theme: "dark"
+                });
+
             } else {
                 isError("Something went wrong!");
+                toast.error("Something went wrong!", {
+                    theme: "dark"
+                });
             }
         }
     })
@@ -175,6 +200,8 @@ function Login() {
                     </section>
                 </form>
             </section>
+
+            <ToastContainer />
         </section>
     );
 }

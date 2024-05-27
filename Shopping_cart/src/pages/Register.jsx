@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
 import {useState} from "react";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
   let [Error, setError] = useState(null);
   let [Success, setSuccess] = useState(null);
-
+  
   const navigate = useNavigate();
 
 
@@ -38,13 +40,16 @@ function Register() {
   const registerUser = useMutation({
     mutationKey: "register",
     mutationFn: async (user) => {
-      let response = await axios.post("http://localhost:3000/register", user);
+      let response = await axios.post(`${import.meta.env.VITE_BASE_URL}/register`, user);
 
       return response.data;
     },
     onSuccess: (data) => {
       setError(null);
       setSuccess(data.message);
+      toast.success("User registered successfully!", {
+        theme: "dark",
+      })
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -53,14 +58,33 @@ function Register() {
       setSuccess(null);
       if(error.response) {
         if(error.response.data && error.response.data.error) {
+
           setError(error.response.data.error);
+          toast.error(error.response.data.error, {
+            theme: "dark",
+          });
+
         } else {
+
           setError("Error occurred while registering user!");
+
+          toast.error("Error occurred while registering user!", {
+            theme: "dark",
+          });
         }
       } else if (error.request) {
+
         setError("Error occurred while requesting data from server!");
+        toast.error("Error occurred while requesting data from server!", {
+          theme: "dark",
+        });
+
       } else {
+        
         setError("Something Went Wrong!");
+        toast.error("Something Went Wrong!", {
+          theme: "dark",
+        });
       }
       // setError(error.response.data.error);
     }
@@ -184,6 +208,7 @@ function Register() {
           </section>
         </form>
       </section>
+      <ToastContainer />
     </section>
   );
 }
