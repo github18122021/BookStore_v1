@@ -33,6 +33,9 @@ function Header(prop) {
     setBooksToDisplay(searchedBook);
   }
 
+  // function to log out user
+  // remove token from local storage
+  // redirect to login page
   function handleLogOut() {
     window.localStorage.removeItem("token");
     // window.location.href = "/login";

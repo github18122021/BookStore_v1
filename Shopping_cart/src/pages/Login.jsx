@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 function Login() {
     let [Error, isError] = useState(null);
 
+
+    // check if token is present, then verify the validity of the token
     useEffect(() => {
         const token = window.localStorage.getItem("token");
 
@@ -37,6 +39,8 @@ function Login() {
               }
         }
     })
+
+    // Redirect to login if token is missing
     const navigate = useNavigate();
 
     const {
@@ -45,6 +49,7 @@ function Login() {
         formState: { errors },
     } = useForm();
 
+    // submit form 
     function submitForm(data) {
         // alert("Form submitted");
 
@@ -58,6 +63,7 @@ function Login() {
         loginUser.mutate(currentUser);
     }
 
+    // Login user
     let loginUser = useMutation({
         mutationKey: "login",
         mutationFn: async (user) => {

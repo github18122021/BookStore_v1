@@ -37,6 +37,12 @@ function Register() {
 
 
   // register user
+  // on success, redirect to login page after 3 seconds and toast message
+  // display success message
+
+  // on error, display error message and toast
+  // display error message
+
   const registerUser = useMutation({
     mutationKey: "register",
     mutationFn: async (user) => {
