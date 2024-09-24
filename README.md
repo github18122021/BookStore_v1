@@ -34,7 +34,7 @@ Check out the live demo of the application [here](https://render-bookstore-v1-10
 
 ## Acknowledgements
 
-I would like to thank my classmate [vasugangani](https://github.com/vasugangani) for their assistance in adding comments to parts of the code. Their input helped improve the clarity of the codebase.
+I would like to thank my classmate [vasu gangani](https://github.com/vasugangani) for their assistance in adding comments to parts of the code. Their input helped improve the clarity of the codebase.
 
 
 
