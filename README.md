@@ -32,4 +32,9 @@ This repository contains the source code for a bookstore web application built u
 
 Check out the live demo of the application [here](https://render-bookstore-v1-101.onrender.com/).
 
+## Acknowledgements
+
+I would like to thank my classmate [vasugangani](https://github.com/vasugangani) for their assistance in adding comments to parts of the code. Their input helped improve the clarity of the codebase.
+
+
 
